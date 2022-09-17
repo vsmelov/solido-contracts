@@ -1,0 +1,78 @@
+compiler:
+    solc:
+        version: 0.8.6
+        optimizer:
+            enabled: true
+            runs: 200
+        remappings:
+            - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.3"
+            - "@openzeppelin-upgradeable=OpenZeppelin/openzeppelin-contracts-upgradeable@4.3.3"
+            - "@uniswap-v2-perephery=vsmelov/v2-periphery@1.1.0"
+            - "@uniswap-v2-core=Uniswap/v2-core@1.0.0"
+
+dependencies:
+    - OpenZeppelin/openzeppelin-contracts@4.3.3
+    - OpenZeppelin/openzeppelin-contracts-upgradeable@4.3.3
+    - vsmelov/v2-periphery@1.1.0
+    - Uniswap/v2-core@1.0.0
+
+reports:
+# that's does not work, so I have specified each contract manually below
+    exclude_paths:
+        - "@openzeppelin/**/*.*"
+        - "@openzeppelin-upgradeable/**/*.*"
+        - "OpenZeppelin/openzeppelin-contracts@*/**/*.*"
+        - "OpenZeppelin/openzeppelin-contracts-upgradeable@*/**/*.*"
+    exclude_contracts:
+        - "ERC721"
+        - "ERC20PresetMinterPauser"
+        - "ERC20Pausable"
+        - "ERC20"
+        - "AccessControl"
+        - "Address"
+        - "ERC721Enumerable"
+        - "ERC721URIStorage"
+        - "SafeERC20"
+        - "Initializable"
+        - "ReentrancyGuard"
+        - "IERC20"
+        - "IERC721"
+        - "AccessControlUpgradeable"
+        - "EnumerableSetUpgradeable"
+        - "ERC721EnumerableUpgradeable"
+        - "ERC721PausableUpgradeable"
+        - "ERC721Upgradeable"
+        - "ERC20PresetMinterUpgradeable"
+        - "ERC20Upgradeable"
+        - "SignatureCheckerUpgradeable"
+        - "ECDSAUpgradeable"
+        - "ERC20BurnableUpgradeable"
+        - "UniswapV2Factory"
+        - "USDTMock"
+        - "Utils"
+        - "StringsUpgradeable"
+        - "OwnableUpgradeable"
+
+        - "NFTPassportOwnershipERC721BaseEnumerablePausableUpgradeable"
+        - "NFTPartyMembershipOwnershipERC721BaseEnumerablePausableUpgradeable"
+        - "NFTWalletOwnershipWithOffchainMarketplacePauserMintPriceTransferTaxBase"
+        - "NFTPassportOwnershipWithOffchainMarketplacePauserMintPriceTransferTaxBase"
+        - "NFTPartyMembershipOwnershipWithOffchainMarketplacePauserMintPriceTransferTaxBase"
+        - "OffchainERC721MarketplacePassportOwnership"
+        - "OffchainERC721Marketplace"
+        - "OffchainERC721MarketplacePartyMembershipOwnership"
+
+#        - "NFTPassportStorage"
+#        - "MinPowerPointsStorage"
+#        - "MaxInProgressStorage"
+#        - "NFTPartyStorage"
+#        - "SaleTaxNumeratorStorage"
+#        - "LevelAcceptedNumeratorStorage"
+#        - "NFTPartyDraftRulesFabric"
+#        - "NFTPartyRulesFabric"
+#        - "NFTPartyMembershipFabric"
+#        - "NFTPartyLeaderFabric"
+#        - "PartyVotingWindowFabric"
+#        - "NFTNomineeForPartyLeaderFabric"
+#        - "NFTPartyMembershipStorage"
+    only_include_project: true
