@@ -18,82 +18,62 @@ brownie test
 brownie run scripts/testnet/deploy_genesisNFT_and\ genesisMarketplace.py --network bsc-test
 
 Running 'scripts/testnet/deploy_genesisNFT_and genesisMarketplace.py::main'...
-Transaction sent: 0xe2280b673d51a45af0e5f47d85c1793e2a464590be9212d1c07044f8f7dd13bd
-  Gas price: 10.0 gwei   Gas limit: 2615658   Nonce: 16
-  SolidoGenesisNFT.constructor confirmed   Block: 22916791   Gas used: 2377871 (90.91%)
-  SolidoGenesisNFT deployed at: 0xb10827905C91e4a4dbb1610FF17c0Ae7d7a9416e
+Transaction sent: 0xe957f0c152b966a009c47b8d984b4cd0ce431c5551f30938724295e5179e942b
+  SolidoGenesisNFT.constructor confirmed   Block: 23032670   Gas used: 2377871 (90.91%)
+  SolidoGenesisNFT deployed at: 0xCdbe8464d185735EdFEf501eF8A9977477bfd202
 
-Transaction sent: 0x16405b9cb0e616518f84955336aeeff5209a3ffc829a396ee6b00dde4b6f8ac5
-  Gas price: 10.0 gwei   Gas limit: 2081502   Nonce: 17
-  SolidoGenesisNFTMarketplace.constructor confirmed   Block: 22916793   Gas used: 1892275 (90.91%)
-  SolidoGenesisNFTMarketplace deployed at: 0xAd8bc99D9ABa9ED2aFa83A3f6873fdC84Ab9f652
+Transaction sent: 0x36b912f053a383bb0479d7e3d9f61d4d31f8881bd7754ab9132a9657f39eaf02
+  SolidoGenesisNFTMarketplace.constructor confirmed   Block: 23032672   Gas used: 2401947 (90.91%)
+  SolidoGenesisNFTMarketplace deployed at: 0x3397F1221dd4aBe993e832b1082ed45D852a4fD7
 
-Verification submitted successfully. Waiting for result...
-Verification complete. Result: Already Verified
-Verification submitted successfully. Waiting for result...
-Verification pending...
-Verification complete. Result: Pass - Verified
-Transaction sent: 0xfac0d176f9952f186ad1658421aa729df84dc621f9ad77cf972d47d25577d5f0
-  Gas price: 10.0 gwei   Gas limit: 49404   Nonce: 18
-  SolidoGenesisNFTMarketplace.setNftTypePrice confirmed   Block: 22916810   Gas used: 44913 (90.91%)
+Transaction sent: 0xec2ed16f47130eca5e2f039f3681244594027d05001bcf5450a0f23049bc8300
+  SolidoGenesisNFTMarketplace.setNftTypePrice confirmed   Block: 23032691   Gas used: 44913 (90.91%)
 
-Transaction sent: 0x5594a294a8ab01ed6c013a9a3d6530580431b84c744ddf962ce45cf9eded86bd
-  Gas price: 10.0 gwei   Gas limit: 49404   Nonce: 19
-  SolidoGenesisNFTMarketplace.setNftTypePrice confirmed   Block: 22916812   Gas used: 44913 (90.91%)
+Transaction sent: 0x27a7b8fd1422b48307575f65929c17778869b8ebb8fd15fa5a25fce1511fa0fc
+  SolidoGenesisNFTMarketplace.setNftTypePrice confirmed   Block: 23032693   Gas used: 44913 (90.91%)
 
-Transaction sent: 0x0413ff5e9f9e96ee5b12b9dacf59d1a4e96105b4551536382ded6296df7289b0
-  Gas price: 10.0 gwei   Gas limit: 49402   Nonce: 20
-  SolidoGenesisNFT.setApprovalForAll confirmed   Block: 22916814   Gas used: 44911 (90.91%)
+Transaction sent: 0xb1cbe9db2410d486a0dfea92b81cb30bf081ca21ba857268a1beaf4e3329e7bf
+  SolidoGenesisNFT.setApprovalForAll confirmed   Block: 23032695   Gas used: 44911 (90.91%)
 
-Transaction sent: 0x2f41135940e2266b78a234001af5d3e5b271106322309a6cf21938bc8a47cf46
-  Gas price: 10.0 gwei   Gas limit: 636189   Nonce: 21
-  SolidoGenesisNFT.mintBatch confirmed   Block: 22916816   Gas used: 578354 (90.91%)
+Transaction sent: 0xaa4b6d75df48bf53238322fb544751864d0267ccf4ffb85ad4b1ec2055deb511
+  SolidoGenesisNFT.mintBatch confirmed   Block: 23032697   Gas used: 578354 (90.91%)
 
-mint 5 of type 1 - tx <Transaction '0x2f41135940e2266b78a234001af5d3e5b271106322309a6cf21938bc8a47cf46'>
-Transaction sent: 0x6a7dcaf31c4cb65ebd9a1898a485b7e395a3f892442418af0c8664dfbb115bce
-  Gas price: 10.0 gwei   Gas limit: 416944   Nonce: 22
-  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 22916818   Gas used: 267003 (64.04%)
+mint 5 of type 1 - tx <Transaction '0xaa4b6d75df48bf53238322fb544751864d0267ccf4ffb85ad4b1ec2055deb511'>
+Transaction sent: 0x4c5bea83c3ffd37a3943081dfadc5ece9c3709c3503e70b972cbb94d89d3dda6
+  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 23032700   Gas used: 515685 (74.68%)
 
-list 5 of type 1 - tx <Transaction '0x2f41135940e2266b78a234001af5d3e5b271106322309a6cf21938bc8a47cf46'>
-Transaction sent: 0x6c53783a4a1babe946f19083e6c7db0bf5381d4f259391d82760e2cf3cf8f86c
-  Gas price: 10.0 gwei   Gas limit: 640875   Nonce: 23
-  SolidoGenesisNFT.mintBatch confirmed   Block: 22916820   Gas used: 582614 (90.91%)
+list 5 of type 1 - tx <Transaction '0xaa4b6d75df48bf53238322fb544751864d0267ccf4ffb85ad4b1ec2055deb511'>
+Transaction sent: 0xa14e3e37cceb8f66e32c3d971c1cfa058521a9b87d2e66635a9bfe0be0a4780b
+  SolidoGenesisNFT.mintBatch confirmed   Block: 23032702   Gas used: 582614 (90.91%)
 
-mint 5 of type 2 - tx <Transaction '0x6c53783a4a1babe946f19083e6c7db0bf5381d4f259391d82760e2cf3cf8f86c'>
-Transaction sent: 0xfaf71d3c4c9695ffe2e24b1f43766ce416eaeda24a355583cae30801ad994b48
-  Gas price: 10.0 gwei   Gas limit: 421703   Nonce: 24
-  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 22916822   Gas used: 288063 (68.31%)
+mint 5 of type 2 - tx <Transaction '0xa14e3e37cceb8f66e32c3d971c1cfa058521a9b87d2e66635a9bfe0be0a4780b'>
+Transaction sent: 0x850d2cdf6c73d7ea847b255861605e366befe63452419a2e2f19db9ce6198dba
+  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 23032704   Gas used: 537195 (77.21%)
 
-list 5 of type 2 - tx <Transaction '0x6c53783a4a1babe946f19083e6c7db0bf5381d4f259391d82760e2cf3cf8f86c'>
-Transaction sent: 0x44278136d964f618950bcbe2574eba5041dd731e16c403dbf7a1000021278b99
-  Gas price: 10.0 gwei   Gas limit: 640875   Nonce: 25
-  SolidoGenesisNFT.mintBatch confirmed   Block: 22916824   Gas used: 582614 (90.91%)
+list 5 of type 2 - tx <Transaction '0xa14e3e37cceb8f66e32c3d971c1cfa058521a9b87d2e66635a9bfe0be0a4780b'>
+Transaction sent: 0xe81b906a0c44db4accc9c793487827028b069a0ca8c95b8023ceb3987338fb35
+  SolidoGenesisNFT.mintBatch confirmed   Block: 23032706   Gas used: 582614 (90.91%)
 
-mint 5 of type 3 - tx <Transaction '0x44278136d964f618950bcbe2574eba5041dd731e16c403dbf7a1000021278b99'>
-Transaction sent: 0x990a05d554c300e623c11ca424a49a9d429ef1f7cd25704df40f6202a50d5eaa
-  Gas price: 10.0 gwei   Gas limit: 421703   Nonce: 26
-  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 22916826   Gas used: 288063 (68.31%)
+mint 5 of type 3 - tx <Transaction '0xe81b906a0c44db4accc9c793487827028b069a0ca8c95b8023ceb3987338fb35'>
+Transaction sent: 0x5f95f933befdecafff7dd26a5214d9183c2e5dd5b878458f16517428d36fe5f2
+  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 23032708   Gas used: 538010 (77.23%)
 
-list 5 of type 3 - tx <Transaction '0x44278136d964f618950bcbe2574eba5041dd731e16c403dbf7a1000021278b99'>
-Transaction sent: 0x5440214c1a9eed35f7ffeadb06dadde5daff38db1e73d60fbad2698df6c7d6eb
-  Gas price: 10.0 gwei   Gas limit: 640875   Nonce: 27
-  SolidoGenesisNFT.mintBatch confirmed   Block: 22916828   Gas used: 582614 (90.91%)
+list 5 of type 3 - tx <Transaction '0xe81b906a0c44db4accc9c793487827028b069a0ca8c95b8023ceb3987338fb35'>
+Transaction sent: 0x582f105949346a9dce7e32f2a1a68af86cc9980f0487e815ae00cdd482886f11
+  SolidoGenesisNFT.mintBatch confirmed   Block: 23032710   Gas used: 582614 (90.91%)
 
-mint 5 of type 4 - tx <Transaction '0x5440214c1a9eed35f7ffeadb06dadde5daff38db1e73d60fbad2698df6c7d6eb'>
-Transaction sent: 0x5782f86532f82727c4e6a549a0add391febccab0c1093c3d8aae19685cf22bb2
-  Gas price: 10.0 gwei   Gas limit: 421703   Nonce: 28
-  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 22916830   Gas used: 288063 (68.31%)
+mint 5 of type 4 - tx <Transaction '0x582f105949346a9dce7e32f2a1a68af86cc9980f0487e815ae00cdd482886f11'>
+Transaction sent: 0xd06b0f17b4090a7ef762e0694c068ff4395794765dda80e3bcf28abcac05a58d
+  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 23032712   Gas used: 539190 (77.25%)
 
-list 5 of type 4 - tx <Transaction '0x5440214c1a9eed35f7ffeadb06dadde5daff38db1e73d60fbad2698df6c7d6eb'>
-Transaction sent: 0x4c9b2f54c3ed8b979af0bd443e5a17f1fa457e4300b6a45f75d9982a32080bba
-  Gas price: 10.0 gwei   Gas limit: 640875   Nonce: 29
-  SolidoGenesisNFT.mintBatch confirmed   Block: 22916832   Gas used: 582614 (90.91%)
+list 5 of type 4 - tx <Transaction '0x582f105949346a9dce7e32f2a1a68af86cc9980f0487e815ae00cdd482886f11'>
+Transaction sent: 0x13ff5dfe0bfa72f4c5b95a12b114bdcdb522235e27abd0d4369378d554970a54
+  SolidoGenesisNFT.mintBatch confirmed   Block: 23032715   Gas used: 582614 (90.91%)
 
-mint 5 of type 5 - tx <Transaction '0x4c9b2f54c3ed8b979af0bd443e5a17f1fa457e4300b6a45f75d9982a32080bba'>
-Transaction sent: 0x67f939ebe46e21671c57d6d53427bbc86c6483b2a943c5434888b6b220e9133d
-  Gas price: 10.0 gwei   Gas limit: 421703   Nonce: 30
-  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 22916834   Gas used: 288063 (68.31%)
+mint 5 of type 5 - tx <Transaction '0x13ff5dfe0bfa72f4c5b95a12b114bdcdb522235e27abd0d4369378d554970a54'>
+Transaction sent: 0x1e1a1047bf2cc6997679b80709f1a2934b985cfb6eee1e25ea03b6b0e133ce0c
+  SolidoGenesisNFTMarketplace.listMany confirmed   Block: 23032717   Gas used: 540735 (77.29%)
 
-list 5 of type 5 - tx <Transaction '0x4c9b2f54c3ed8b979af0bd443e5a17f1fa457e4300b6a45f75d9982a32080bba'>
+list 5 of type 5 - tx <Transaction '0x13ff5dfe0bfa72f4c5b95a12b114bdcdb522235e27abd0d4369378d554970a54'>
 
 ```
