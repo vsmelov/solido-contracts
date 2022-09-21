@@ -32,7 +32,7 @@ def test_flow(nft, marketplace, usdt, owner, users):
     # owner gives permission to marketplace to control his token (this tx should be done only once)
     nft.setApprovalForAll(marketplace, True, {"from": owner})
 
-    # owner set price = 3usdt for aluminium
+    # owner set price for aluminium
     tx = marketplace.setNftTypePrice(
         TYPE_ALUMINIUM,  # nft type
         usdt,  # payable token
