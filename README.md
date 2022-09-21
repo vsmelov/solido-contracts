@@ -5,9 +5,6 @@
 ```bash
 brownie run scripts/testnet/deploy_genesisNFT_and\ genesisMarketplace.py --network bsc-test
 
-solido-test pub: 0xAeC5CCeAfff79F2CA3E6eD0800504E1025D56640
-solido-test private: 686011d4bfb9db6f98dbb269181b3b59ab6adf43d3a01bbf836a9c1ba273616d
-
 Running 'scripts/testnet/deploy_genesisNFT_and genesisMarketplace.py::main'...
 Transaction sent: 0xe2280b673d51a45af0e5f47d85c1793e2a464590be9212d1c07044f8f7dd13bd
   Gas price: 10.0 gwei   Gas limit: 2615658   Nonce: 16
