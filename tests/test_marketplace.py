@@ -56,6 +56,7 @@ def test_flow(nft, marketplace, usdt, owner, users):
     assert tx.events['Listed']['lister'] == owner
     assert tx.events['Listed']['from'] == owner
     assert tx.events['Listed']['tokenId'] == tokenId
+    assert nft.ownerOf(tokenId) == marketplace
 
     # buyer approves USDT
     usdt.approve(marketplace, price, {"from": buyer})
