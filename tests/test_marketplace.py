@@ -6,8 +6,7 @@ TYPE_ARGENTUM = 4
 TYPE_AURUM = 5
 
 
-def test_list_delist(nft, marketplace, usdt, owner, users):
-    buyer = users[0]
+def test_list_delist(nft, marketplace, owner):
     tokenId = 42  # aluminium
 
     # owner gives permission to marketplace to control his token (this tx should be done only once)
