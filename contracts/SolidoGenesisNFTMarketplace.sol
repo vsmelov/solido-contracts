@@ -5,11 +5,13 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
+import '@openzeppelin/contracts/utils/structs/EnumerableSet.sol';
 import "./SolidoGenesisNFT.sol";
 
 contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
     using SafeERC20 for IERC20;
     using Address for address payable;
+    using EnumerableSet for EnumerableSet.UintSet;
 
     event NFTTypePriceTokenSet(
         SolidoGenesisNFT.TYPE indexed nftType,
@@ -41,6 +43,8 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
     mapping (SolidoGenesisNFT.TYPE /*nft type*/ => mapping(address /*payable*/ => uint256 /*price*/)) public nftTypeTokenPrice;
     SolidoGenesisNFT immutable public solidoGenesisNFT;
 
+    mapping (SolidoGenesisNFT.TYPE => EnumerableSet.UintSet) internal _typeListedNFTSet;
+
     constructor(address _solidoGenesisNFT) {
         solidoGenesisNFT = SolidoGenesisNFT(_solidoGenesisNFT);
     }
@@ -59,6 +63,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
         uint256 tokenId
     ) external onlyOwner {
         solidoGenesisNFT.safeTransferFrom(from, address(this), tokenId);
+        _typeListedNFTSet[solidoGenesisNFT.getTokenType(tokenId)].add(tokenId);
         emit Listed(msg.sender, from, tokenId);
     }
 
@@ -67,7 +72,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
         uint256[] memory tokenIds
     ) external onlyOwner {
         SolidoGenesisNFT.TransferFromItem[] memory items = new SolidoGenesisNFT.TransferFromItem[](tokenIds.length);
-        for (uint256 index = 0; index < tokenIds.length; ++index) {
+        for (uint256 index = 0; index < tokenIds.length;) {
             uint256 tokenId = tokenIds[index];
             items[index] = SolidoGenesisNFT.TransferFromItem({
                 from: from,
@@ -75,7 +80,11 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
                 tokenId: tokenId,
                 data: ""
             });
+            _typeListedNFTSet[solidoGenesisNFT.getTokenType(tokenId)].add(tokenId);
             emit Listed(msg.sender, from, tokenId);
+            unchecked {
+                index += 1;
+            }
         }
         solidoGenesisNFT.safeTransferFromBatch(items);
     }
@@ -85,6 +94,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
         uint256 tokenId
     ) external onlyOwner {
         solidoGenesisNFT.safeTransferFrom(address(this), to, tokenId);
+        _typeListedNFTSet[solidoGenesisNFT.getTokenType(tokenId)].remove(tokenId);
         emit Delisted(msg.sender, to, tokenId);
     }
 
@@ -93,7 +103,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
         uint256[] memory tokenIds
     ) external onlyOwner {
         SolidoGenesisNFT.TransferFromItem[] memory items = new SolidoGenesisNFT.TransferFromItem[](tokenIds.length);
-        for (uint256 index = 0; index < tokenIds.length; ++index) {
+        for (uint256 index = 0; index < tokenIds.length;) {
             uint256 tokenId = tokenIds[index];
             items[index] = SolidoGenesisNFT.TransferFromItem({
                 from: address(this),
@@ -101,7 +111,11 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
                 tokenId: tokenId,
                 data: ""
             });
+            _typeListedNFTSet[solidoGenesisNFT.getTokenType(tokenId)].remove(tokenId);
             emit Delisted(msg.sender, to, tokenId);
+            unchecked {
+                index += 1;
+            }
         }
         solidoGenesisNFT.safeTransferFromBatch(items);
     }
@@ -116,6 +130,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
         require(price > 0, "sell is disabled");
         IERC20(payableToken).safeTransferFrom(msg.sender, address(this), price);
         solidoGenesisNFT.safeTransferFrom(address(this), to, tokenId);
+        _typeListedNFTSet[nftType].remove(tokenId);
         emit Purchased({
             purchaser: msg.sender,
             to: to,
@@ -134,6 +149,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
         require(price > 0, "sell is disabled");
         require(msg.value == price, "msg.value != price");
         solidoGenesisNFT.safeTransferFrom(address(this), to, tokenId);
+        _typeListedNFTSet[nftType].remove(tokenId);
         emit Purchased({
             purchaser: msg.sender,
             to: to,
@@ -150,7 +166,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
     ) external {
         uint256 totalPrice = 0;
         SolidoGenesisNFT.TransferFromItem[] memory items = new SolidoGenesisNFT.TransferFromItem[](tokenIds.length);
-        for (uint256 index; index < tokenIds.length; ++index) {
+        for (uint256 index; index < tokenIds.length;) {
             uint256 tokenId = tokenIds[index];
             SolidoGenesisNFT.TYPE nftType = solidoGenesisNFT.getTokenType(tokenId);
             uint256 price = nftTypeTokenPrice[nftType][payableToken];
@@ -169,6 +185,10 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
                 tokenId: tokenId,
                 data: ""
             });
+            _typeListedNFTSet[nftType].remove(tokenId);
+            unchecked {
+                index += 1;
+            }
         }
         IERC20(payableToken).safeTransferFrom(msg.sender, address(this), totalPrice);
         solidoGenesisNFT.safeTransferFromBatch(items);
@@ -180,7 +200,7 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
     ) external payable {
         uint256 totalPrice = 0;
         SolidoGenesisNFT.TransferFromItem[] memory items = new SolidoGenesisNFT.TransferFromItem[](tokenIds.length);
-        for (uint256 index; index < tokenIds.length; ++index) {
+        for (uint256 index; index < tokenIds.length;) {
             uint256 tokenId = tokenIds[index];
             SolidoGenesisNFT.TYPE nftType = solidoGenesisNFT.getTokenType(tokenId);
             uint256 price = nftTypeTokenPrice[nftType][address(0)];
@@ -199,6 +219,10 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
                 tokenId: tokenId,
                 data: ""
             });
+            _typeListedNFTSet[nftType].remove(tokenId);
+            unchecked {
+                index += 1;
+            }
         }
         require(msg.value == totalPrice, "msg.value != totalPrice");
         solidoGenesisNFT.safeTransferFromBatch(items);
@@ -218,6 +242,9 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
 
     /// @notice recover erc721 token, this could be used to withdraw occasionally sent native NFTs (use `delist` if you want to cancel NFT listing)
     function recoverERC721(address _nft, uint256 tokenId, address to) external onlyOwner {
+        if (_nft == address(solidoGenesisNFT)) {
+            require(!_typeListedNFTSet[solidoGenesisNFT.getTokenType(tokenId)].contains(tokenId), "use delist for listed NFT");
+        }
         IERC721(_nft).safeTransferFrom(address(this), to, tokenId);
         emit ERC721Recovered(_nft, to, tokenId);
     }
@@ -229,5 +256,38 @@ contract SolidoGenesisNFTMarketplace is IERC721Receiver, Ownable {
         bytes calldata data
     ) external override returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
+    }
+
+    function getNumberListedByType(SolidoGenesisNFT.TYPE nftType) external view returns(uint256) {
+        EnumerableSet.UintSet storage set = _typeListedNFTSet[nftType];
+        return set.length();
+    }
+
+    function getAllListedByType(SolidoGenesisNFT.TYPE nftType) external view returns(uint256[] memory) {
+        EnumerableSet.UintSet storage set = _typeListedNFTSet[nftType];
+        return set.values();
+    }
+
+    function getAllListedByTypePaginated(
+        SolidoGenesisNFT.TYPE nftType,
+        uint256 start,
+        uint256 end
+    ) external view returns(uint256[] memory) {
+        EnumerableSet.UintSet storage set = _typeListedNFTSet[nftType];
+        uint256 _length = set.length();
+        if (end > _length) {
+            end = _length;
+        }
+        require(end >= start, "end < start");
+        unchecked {
+            uint256[] memory result = new uint256[](end-start);  // no underflow
+            uint256 resultIndex = 0;
+            for (uint256 index=start; index<end;) {
+                result[resultIndex] = set.at(index);
+                    index += 1;  // no overflow
+                    resultIndex += 1;  // no overflow
+            }
+            return result;
+        }
     }
 }
