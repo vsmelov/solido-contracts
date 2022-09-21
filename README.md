@@ -1,5 +1,17 @@
 # solido-contracts
 
+## Compile
+
+```bash
+brownie compile 
+```
+
+## Test
+
+```bash
+brownie test 
+```
+
 ## Deploy to testnet
 
 ```bash
