@@ -126,15 +126,13 @@ contract SolidoNFTMarketplace is IERC721Receiver, Ownable {
         address indexed nftContract,
         uint256 indexed tokenId,
         address payableToken,
-        uint256 price,  // 0 means "no listing",
+        uint256 price,  // 0 means "no listing"
         uint256 previousPrice
     );
     event Listed(
         address indexed lister,
         address indexed nftContract,
-        uint256 indexed tokenId,
-        address payableToken,
-        uint256 price
+        uint256 indexed tokenId
     );
     event Delisted(
         address indexed delister,
@@ -169,32 +167,30 @@ contract SolidoNFTMarketplace is IERC721Receiver, Ownable {
     constructor() {
     }
 
-    /// @notice set listed NFT price
+    /// @notice update listed NFT price
     /// @param nftContract nft address
     /// @param tokenId token id
     /// @param payableToken payable token
-    /// @param price price
+    /// @param price price (not zero)
     function setNFTPrice(
         address nftContract,
         uint256 tokenId,
         address payableToken,
         uint256 price
     ) external onlyOwner {
-        require(_nftContractTokenIdPayableTokenPrice[nftContract][tokenId].length() > 0, "NOT_LISTED_YET");
+        EnumerableMap.AddressToUintMap storage pricesMap =
+            _nftContractTokenIdPayableTokenPrice[nftContract][tokenId];
+
+        require(pricesMap.length() > 0, "NOT_LISTED_YET");
+        require(price > 0, "zero price (use clearNFTPrice)");
         bool contains;
         uint256 previousPrice;
-        (contains, previousPrice) = _nftContractTokenIdPayableTokenPrice[nftContract][tokenId].tryGet(payableToken);  // can be =0
+        (contains, previousPrice) = pricesMap.tryGet(payableToken);  // can be =0
         if (contains) {
             _listingSet.remove(ListingSetLib.Listing(nftContract, tokenId, payableToken, previousPrice));
         }
-        if (price == 0) {
-            require(previousPrice > 0, "no offer to delist");
-            require(_nftContractTokenIdPayableTokenPrice[nftContract][tokenId].length() > 1, "use delist");
-            _nftContractTokenIdPayableTokenPrice[nftContract][tokenId].remove(payableToken);
-        } else {
-            _listingSet.add(ListingSetLib.Listing(nftContract, tokenId, payableToken, price));
-            _nftContractTokenIdPayableTokenPrice[nftContract][tokenId].set(payableToken, price);
-        }
+        _listingSet.add(ListingSetLib.Listing(nftContract, tokenId, payableToken, price));
+        pricesMap.set(payableToken, price);
         emit NFTPriceSet({
             lister: msg.sender,
             nftContract: nftContract,
@@ -205,31 +201,77 @@ contract SolidoNFTMarketplace is IERC721Receiver, Ownable {
         });
     }
 
-    function list(
-        address from,
+    /// @notice clear listed NFT price
+    /// @param nftContract nft address
+    /// @param tokenId token id
+    /// @param payableToken payable token
+    /// @param to where to send NFT token if the last listing removed
+    function clearNFTPrice(
         address nftContract,
         uint256 tokenId,
         address payableToken,
-        uint256 price
-    ) public onlyOwner {
-        IERC721(nftContract).safeTransferFrom(from, address(this), tokenId);
-        _listingSet.add(ListingSetLib.Listing(nftContract, tokenId, payableToken, price));
-        totalListedNFT += 1;
-        _nftContractTokenIdPayableTokenPrice[nftContract][tokenId].set(payableToken, price);
-        emit Listed({
+        address to
+    ) external onlyOwner {
+        EnumerableMap.AddressToUintMap storage pricesMap =
+            _nftContractTokenIdPayableTokenPrice[nftContract][tokenId];
+
+        require(pricesMap.length() > 0, "NOT_LISTED_YET");
+        bool contains;
+        uint256 previousPrice;
+        (contains, previousPrice) = pricesMap.tryGet(payableToken);  // can be =0
+        require(contains, "nothing to clear");
+        require(previousPrice > 0, "nothing to clear");
+        _listingSet.remove(ListingSetLib.Listing(nftContract, tokenId, payableToken, previousPrice));
+        pricesMap.remove(payableToken);
+
+        emit NFTPriceSet({
             lister: msg.sender,
             nftContract: nftContract,
             tokenId: tokenId,
             payableToken: payableToken,
-            price: price
+            price: 0,
+            previousPrice: previousPrice
         });
+
+        if (pricesMap.length() == 0) {
+            totalListedNFT -= 1;
+            emit Delisted(msg.sender, to, tokenId);
+        }
     }
 
     struct ListItem {
         address nftContract;
         uint256 tokenId;
-        address payableToken;
-        uint256 price;
+        PayableTokenPrice[] prices;
+    }
+
+    function list(
+        address from,
+        ListItem memory item
+    ) public onlyOwner {
+        IERC721(item.nftContract).safeTransferFrom(from, address(this), item.tokenId);
+        totalListedNFT += 1;
+        emit Listed({
+            lister: msg.sender,
+            nftContract: item.nftContract,
+            tokenId: item.tokenId
+        });
+
+        require(item.prices.length > 0, "empty prices");
+        for (uint256 index=0; index<item.prices.length; ++index) {
+            address payableToken = item.prices[index].payableToken;
+            uint256 price = item.prices[index].price;
+            _listingSet.add(ListingSetLib.Listing(item.nftContract, item.tokenId, payableToken, price));
+            _nftContractTokenIdPayableTokenPrice[item.nftContract][item.tokenId].set(payableToken, price);
+            emit NFTPriceSet({
+                lister: msg.sender,
+                nftContract: item.nftContract,
+                tokenId: item.tokenId,
+                payableToken: payableToken,
+                price: price,
+                previousPrice: 0
+            });
+        }
     }
 
     function listMany(
@@ -240,10 +282,7 @@ contract SolidoNFTMarketplace is IERC721Receiver, Ownable {
             ListItem memory item = items[index];
             list({
                 from: from,
-                nftContract: item.nftContract,
-                tokenId: item.tokenId,
-                payableToken: item.payableToken,
-                price: item.price
+                item: item
             });
             unchecked {
                 index += 1;
@@ -263,6 +302,14 @@ contract SolidoNFTMarketplace is IERC721Receiver, Ownable {
             (payableToken, price) = pricesMap.at(0);
             pricesMap.remove(payableToken);
             _listingSet.remove(ListingSetLib.Listing(nftContract, tokenId, payableToken, price));
+            emit NFTPriceSet({
+                lister: msg.sender,
+                nftContract: nftContract,
+                tokenId: tokenId,
+                payableToken: payableToken,
+                price: 0,
+                previousPrice: price
+            });
         }
     }
 

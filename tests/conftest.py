@@ -13,6 +13,16 @@ def users(accounts):
 
 
 @pytest.fixture
+def alice(users):
+    return users[0]
+
+
+@pytest.fixture
+def bob(users):
+    return users[1]
+
+
+@pytest.fixture
 def nft(owner):
     return SolidoGenesisNFT.deploy(
         "SolidoGenesisNFT",  # name,
@@ -32,6 +42,13 @@ def marketplace(owner, nft):
 
 
 @pytest.fixture
+def universal_marketplace(owner, nft):
+    return SolidoNFTMarketplace.deploy(
+        {"from": owner}
+    )
+
+
+@pytest.fixture
 def usdt(owner, nft, users):
     contract = MockUSDT.deploy(
         {"from": owner}
@@ -40,3 +57,12 @@ def usdt(owner, nft, users):
         contract.mint(account, 1e6 * 1e18, {"from": owner})
     return contract
 
+
+@pytest.fixture
+def usdc(owner, nft, users):
+    contract = MockUSDT.deploy(
+        {"from": owner}
+    )
+    for account in [owner] + users:
+        contract.mint(account, 1e6 * 1e18, {"from": owner})
+    return contract
