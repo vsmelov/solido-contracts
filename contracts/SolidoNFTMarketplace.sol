@@ -20,10 +20,36 @@ library ListingSetLib {
 
     struct ListingSet {
         Listing[] _values;
+        // it's not possible to use struct Listing as a mapping key so we use embedded mappings
+        //   per each attribute
+        //   think about the following structure as about
+        //   mapping(Listing /*value*/ => uint256 /*index*/)
         mapping(address /*nftContract*/ =>
             mapping(uint256 /*tokenId*/ =>
                 mapping(address /*payableToken*/ =>
                     mapping(uint256 /*price*/ => uint256 /*index*/)))) _indexes;
+    }
+
+    function getIndex(
+        ListingSet storage set,
+        Listing memory value
+    ) private view returns(uint256) {
+        return set._indexes[value.nftContract][value.tokenId][value.payableToken][value.price];
+    }
+
+    function setIndex(
+        ListingSet storage set,
+        Listing memory value,
+        uint256 index
+    ) private {
+        set._indexes[value.nftContract][value.tokenId][value.payableToken][value.price] = index;
+    }
+
+    function deleteIndex(
+        ListingSet storage set,
+        Listing memory value
+    ) private {
+        delete set._indexes[value.nftContract][value.tokenId][value.payableToken][value.price];
     }
 
     function add(
@@ -34,7 +60,7 @@ library ListingSetLib {
             set._values.push(value);
             // The value is stored at length-1, but we add 1 to all indexes
             // and use 0 as a sentinel value
-            set._indexes[value.nftContract][value.tokenId][value.payableToken][value.price] = set._values.length;
+            setIndex(set, value, set._values.length);
         }
     }
 
@@ -43,7 +69,7 @@ library ListingSetLib {
         Listing memory value
     ) internal {
         // We read and store the value's index to prevent multiple reads from the same storage slot
-        uint256 valueIndex = set._indexes[value.nftContract][value.tokenId][value.payableToken][value.price];
+        uint256 valueIndex = getIndex(set, value);
 
         if (valueIndex != 0) {
             // Equivalent to contains(set, value)
@@ -60,15 +86,14 @@ library ListingSetLib {
                 // Move the last value to the index where the value to delete is
                 set._values[toDeleteIndex] = lastValue;
                 // Update the index for the moved value
-                set._indexes[lastValue.nftContract][lastValue.tokenId][lastValue.payableToken][lastValue.price] =
-                    valueIndex; // Replace lastValue's index to valueIndex
+                setIndex(set, lastValue, valueIndex); // Replace lastValue's index to valueIndex
             }
 
             // Delete the slot where the moved value was stored
             set._values.pop();
 
             // Delete the index for the deleted slot
-            delete set._indexes[value.nftContract][value.tokenId][value.payableToken][value.price];
+            deleteIndex(set, value);
         }
     }
 
@@ -76,7 +101,7 @@ library ListingSetLib {
         ListingSet storage set,
         Listing memory value
     ) internal view returns (bool) {
-        return set._indexes[value.nftContract][value.tokenId][value.payableToken][value.price] != 0;
+        return getIndex(set, value) != 0;
     }
 
     function length(
@@ -343,7 +368,7 @@ contract SolidoNFTMarketplace is IERC721Receiver, Ownable {
         address from,
         uint256 tokenId,
         bytes calldata data
-    ) external override returns (bytes4) {
+    ) external pure override returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
     }
 
