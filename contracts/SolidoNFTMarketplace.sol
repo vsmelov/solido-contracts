@@ -115,7 +115,7 @@ library ListingSetLib {
     }
 }
 
-contract SolidoNFTMarketplace is IERC721Receiver, Ownable {
+contract SolidoUniversalNFTMarketplace is IERC721Receiver, Ownable {
     using SafeERC20 for IERC20;
     using Address for address payable;
     using ListingSetLib for ListingSetLib.ListingSet;

@@ -43,7 +43,7 @@ def marketplace(owner, nft):
 
 @pytest.fixture
 def universal_marketplace(owner, nft):
-    return SolidoNFTMarketplace.deploy(
+    return SolidoUniversalNFTMarketplace.deploy(
         {"from": owner}
     )
 
