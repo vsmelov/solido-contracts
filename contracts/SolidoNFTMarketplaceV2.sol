@@ -257,6 +257,39 @@ contract SolidoNFTMarketplaceV2 is IERC721Receiver, Ownable {
         });
     }
 
+    function buyWithSwap(
+        address to,
+        IERC721 nftContract,
+        uint256 tokenId,
+        IERC20 payableToken,  // assume there is no transfer fee
+        uint256 expectedPrice
+    ) external {
+        PayableTokenPrice memory listing = _nftContractTokenIdPayableTokenPrice[nftContract][tokenId];
+        if (listing.payableToken != payableToken) revert BuyWrongPayableToken({
+            actualPayableToken: listing.payableToken,
+            expectedPayableToken: payableToken
+        });
+        if (listing.price != expectedPrice) revert BuyWrongPrice({
+            actualPrice: listing.price,
+            expectedPrice: expectedPrice
+        });
+        _buyUnsafe({
+            to: to,
+            nftContract: nftContract,
+            tokenId: tokenId,
+            listing: listing
+        });
+        payableToken.safeTransferFrom(msg.sender, address(this), expectedPrice);
+        emit Purchased({
+            purchaser: msg.sender,
+            to: to,
+            nftContract: nftContract,
+            tokenId: tokenId,
+            payableToken: payableToken,
+            price: expectedPrice
+        });
+    }
+
     function buyForNative(
         address to,
         IERC721 nftContract,
