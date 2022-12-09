@@ -49,6 +49,13 @@ def universal_marketplace(owner, nft):
 
 
 @pytest.fixture
+def universal_marketplace_v2(owner, nft):
+    return SolidoNFTMarketplaceV2.deploy(
+        {"from": owner}
+    )
+
+
+@pytest.fixture
 def usdt(owner, nft, users):
     contract = MockUSDT.deploy(
         {"from": owner}
