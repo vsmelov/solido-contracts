@@ -34,7 +34,7 @@ contract SolidoClaim is Ownable, EIP712 {
 
     SolidoGenesisNFTOwner public genesisNFTOwner;
     IERC20 public feeToken;
-    uint256 feeAmount;
+    uint256 public feeAmount;
 
     constructor() EIP712("SolidoClaim", "1") {
     }
