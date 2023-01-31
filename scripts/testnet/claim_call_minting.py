@@ -2,12 +2,12 @@ import os.path
 import enum
 import time
 from brownie import *
+from eip712.messages import EIP712Message
 
 ADDRESS_ZERO = "0x0000000000000000000000000000000000000000"
 GENESIS_NFT = '0xCdbe8464d185735EdFEf501eF8A9977477bfd202'
 USDT_TESTNET = '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd'
-SOLIDO_CLAIM = '0xa8dffBe689B070409a682Db47317cfd20504E29C'
-
+SOLIDO_CLAIM = '0x0c1b0422EF678f415643cA0F2d86ff39Ac1eC214'
 
 
 def eip712_claim_message(
@@ -59,14 +59,17 @@ def main():
     assert fee_token == USDT_TESTNET
     assert fee_amount <= usdt.balanceOf(user)
 
-    token_id_to_mint = 420
-
-    is_reverted = False
-    try:
-        genesis_nft.ownerOf(token_id_to_mint)
-    except:
-        is_reverted = True
-    assert is_reverted, "token should not exist"
+    token_id_to_mint = 60000
+    while True:
+        try:
+            genesis_nft.ownerOf(token_id_to_mint)
+        except:
+            print(f'token to mint and claim: {token_id_to_mint}')
+            break
+        else:
+            print(f'token {token_id_to_mint} exists, check next')
+            token_id_to_mint += 1
+            continue
 
     if usdt.allowance(user, claim) < fee_amount:
         usdt.approve(claim, fee_amount * 100, {"from": user})
